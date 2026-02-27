@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:meals_app/providers/meals_provider.dart';
 
 enum Filter {
@@ -9,14 +8,16 @@ enum Filter {
   vegan,
 }
 
-class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
-  FiltersNotifier()
-    : super({
-        Filter.glutenFree: false,
-        Filter.lactoseFree: false,
-        Filter.vegetarian: false,
-        Filter.vegan: false,
-      });
+class FiltersNotifier extends Notifier<Map<Filter, bool>> {
+  @override
+  build() {
+    return {
+      Filter.glutenFree: false,
+      Filter.lactoseFree: false,
+      Filter.vegetarian: false,
+      Filter.vegan: false,
+    };
+  }
 
   void setFilters(Map<Filter, bool> chosenFilters) {
     state = chosenFilters;
@@ -30,10 +31,9 @@ class FiltersNotifier extends StateNotifier<Map<Filter, bool>> {
   }
 }
 
-final filtersProvider =
-    StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>(
-      (ref) => FiltersNotifier(),
-    );
+final filtersProvider = NotifierProvider<FiltersNotifier, Map<Filter, bool>>(
+  () => FiltersNotifier(),
+);
 
 final filteredMealsProvider = Provider((ref) {
   final meals = ref.watch(mealsProvider);
